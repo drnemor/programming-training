@@ -1,3 +1,9 @@
+{-
+step - функция берет текущее значение аккамулятора и элемент списка,
+затем возвращает новое значение аккамулятора.
+foldl - функция применяет step к текущему значению аккамулятора,
+затем передает новое значение аккамулятора себе рекурсивно.
+-}
 foldl' :: (a -> b -> a) -> a -> [b] -> a
 foldl' step zero (x:xs) = foldl step (step zero x) xs
 foldl' _    zero []     = zero
@@ -26,14 +32,12 @@ foldSum xs = foldl step 0 xs
 niceSum :: Num a => [a] -> a
 niceSum xs = foldl (+) 0 xs
 
-myFilter p xs = foldr step [] xs
-
-adler32_foldl xs = (b `shiftL` 16) .|. a
+{-adler32_foldl xs = (b `shiftL` 16) .|. a
                      where (a,b) = foldl step (1,0) xs
                        where step (a,b) x = (a' `mod` base, (a' + b) `mod` base)
-                         where a' = a + (ord x .&. 0xff)
+                         where a' = a + (ord x .&. 0xff) -}
 
-filter' :: (a -> Bool) -> [a] -> [a]
+{-filter' :: (a -> Bool) -> [a] -> [a]
 filter' cond xs = foldr step [] xs
   where step x ys | cond x    = x : ys
                   | otherwise = ys
@@ -41,3 +45,16 @@ filter' cond xs = foldr step [] xs
 map' :: (a -> b) -> [a] -> [b]
 map' fun xs = foldr step [] xs
 	where step x ys = fun x : xs
+
+foldl'' :: (a -> b -> a) -> a -> [b] -> a
+foldl'' fun zero xs = foldr step id xs zero
+	where step x g a = g (fun a x)
+-}
+{-
+Заменяет пустой лист им же и применяет конструктор к каждой паре голова/хвост
+-}
+identity :: [a] -> [a]
+identity xs = foldr (:) [] xs
+
+append'' :: [a] -> [a] -> [a]
+append'' xs ys = foldr (:) ys xs
